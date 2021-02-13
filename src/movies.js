@@ -10,18 +10,35 @@ function howManyMovies(movies){
   }
 
 // Iteration 3: All rates average - Get the average of all rates with 2 decimals
-
-function ratesAverage (movies){
-    if(!movies.lenght) return 0
-    let suma=0
-    suma = movies.reduce((a,v) => a + v.rate,0)
-    return ((suma/movies.lenght).toFixed(2))
+const ratesAverage = (arrMovies) => {
+    const sum = arrMovies.map((e)=>{
+        if(!e.rate){
+            return {
+                ...e,
+                rate: 0
+            }
+        } else {
+            return e
+        }
+    })
+    console.log(sum)
+    const ratesAvg = sum.reduce((a,b) => {
+        const totalPeliculas=sum.length
+        const totalRate = a+b.rate/totalPeliculas
+        return totalRate
+    },0)
+    console.log("rates", ((ratesAvg)).toFixed(2))
+    return Number ((ratesAvg).toFixed(2))
 }
 
 // Iteration 4: Drama movies - Get the average of Drama Movies
-
-function dramaMoviesRate (movies){
-    return movies.filter(movie => (movie.genre.indexOf('Drama')>-1)).length
+function dramaMoviesRate(movies) {
+    const drama = movies.filter(function(dramaMovie) {
+        return (dramaMovie.genre.indexOf("Drama") > -1)
+    })
+    if (!drama.length) return 0
+    let suma = (drama.reduce((acc, cv) => acc + cv.rate, 0) / drama.length).toFixed(2)
+    return parseFloat(suma)
 }
 
 /*
@@ -34,15 +51,19 @@ Only Drama Movies! You should return the average of Drama movies only!
 Should return 0 if there is no Drama movie!
 */
   
-
 // Iteration 5: Ordering by year - Order by year, ascending (in growing order)
 
-function orderByYear(movies){
-    const moviesYear = movies.sort((a,b) => {
-        if (movies.year === movies.year) return a.title - b.title
-        return moviesYear = (a - b)
+function orderByYear(arr) {
+    const newArr = [...arr];
+    const moviesByYear = newArr.sort((a, b) => {
+      if (a.year > b.year) {
+        return 1;
+      } else {
+        return -1
+      }
     })
-}
+    return moviesByYear;
+  };
 
 /*
 Defines orderByYear
@@ -56,12 +77,12 @@ If two movies have the same year, order them alphabetically by their title
 
 // Iteration 6: Alphabetic Order - Order by title and print the first 20 titles
 
-function orderAlphabetically(movies){
-    const moviesAlphabet = movies.sort((a, b) => a.title - b.title)
-    if(moviesAlphabet <= 20) return 20
-    return moviesAlphabet
+function orderAlphabetically(arrmovies) {
+    const movieNew = arrmovies.map(e => e.title)
+    movieNew.sort()
+    const prim20 = movieNew.slice(0, 20)
+    return prim20
 }
-
 
 /*
 
@@ -87,5 +108,39 @@ You should return the top20 after ordering them alphabetically.
 */
 
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
+function turnHoursToMinutes(arr) {
+    const modifiedArray = arr.map(movie => {
+        return {
+            title: movie.title,
+            year: movie.year,
+            director: movie.director,
+            duration: convertDurationtoMinutes(movie.duration),
+            genre: movie.genre,
+            rate: movie.rate
+        }
+    });
+    return modifiedArray;
+};
+function convertDurationtoMinutes(string) {
+    let hoursString = '';
+    let minutesString = '';
+    let indexOfSpace = string.indexOf(' ');
+    for (let i = 0; i < string.length; i++) {
+        if (string.indexOf('h') === -1) {
+            minutesString += string[i];
+        } else if (i < indexOfSpace || indexOfSpace === -1) {
+            hoursString += string[i];
+        } else {
+            minutesString += string[i];
+        }
+    }
+    if (hoursString.length === 0) {
+        return parseInt(minutesString, 10);
+    }
+    if (minutesString.length === 0) {
+        return parseInt(hoursString, 10) * 60;
+    }
+    return parseInt(hoursString, 10) * 60 + parseInt(minutesString, 10);
+};
 
 // BONUS - Iteration 8: Best yearly rate average - Best yearly rate average
